@@ -19,8 +19,8 @@ namespace mbed
         void init();
         void print_debug_info();
         bool getDir();
+        void resetCount();  
 
-        void resetCount();                   //TODO
         void setPolarity(uint32_t polarity); //TODO
         uint32_t getPolarity();              //TODO
         TIM_TypeDef *getTIMx();              //TODO
@@ -28,12 +28,13 @@ namespace mbed
         void setPullDown();                  //TODO
         void setPullReset();                 //TODO
 
-    protected:
+    private:
         TIM_Encoder_InitTypeDef _encoder;
         TIM_HandleTypeDef _timer;
         TIM_TypeDef *_TIM;
-
-    protected:
+        volatile int32_t * _encoder_count;
+        bool _initialized;
+    private:
         static void encoderSetup(TIM_Encoder_InitTypeDef *encoder, TIM_HandleTypeDef *timer,
                                  TIM_TypeDef *TIMx, uint32_t maxcount, uint32_t encmode, uint32_t polarity = TIM_INPUTCHANNELPOLARITY_RISING);
     };

@@ -19,31 +19,53 @@ You can easily add support for other STM32 targets.
 ## Example code
 
 `main.cpp`
-===
 ```cpp
 #include <mbed.h>
 #include <Thread.h>
 #include <ThisThread.h>
+#include <mbed_events.h>
 #include <Encoder.h>
 
 using namespace rtos;
 
 DigitalOut led(LED1);
+InterruptIn button(BUTTON1,PullDown);
 Thread thread;
+
+Encoder encoder(TIM2);
+Mutex encoder_mutex;
 
 static void encoder_test()
 {
-    Encoder encoder2(TIM2);
-    encoder2.init();
+    encoder.init();
     while(1){
-        encoder2.print_debug_info();
+        encoder_mutex.lock();
+
+        encoder.print_debug_info();
+
+        encoder_mutex.unlock();
         ThisThread::sleep_for(100);
     }
 }
 
+static void buttonCallback()
+{
+    ThisThread::sleep_for(50);
+    if(!button.read())
+        return;
+    encoder_mutex.lock();
+        encoder.resetCount();
+        printf("RESET!\r\n");
+    encoder_mutex.unlock();
+}
+
+
 int main()
 {
-    thread.start(callback(encoder_test));
+    EventQueue * q = mbed_event_queue();
+
+    thread.start(encoder_test);
+    button.rise(q->event(buttonCallback));
     while(1)
     {
         led = !led;
@@ -53,7 +75,6 @@ int main()
 ```
 
 `app_mbed.json`
-===
 ```
 {
     "config": {
@@ -64,7 +85,7 @@ int main()
     ],
     "target_overrides" : {
         "NUCLEO_F401RE": {
-            "events.shared-dispatch-from-application": 1,
+            "events.shared-dispatch-from-application": 0,
             "platform.default-serial-baud-rate": 115200,
             "platform.stdio-baud-rate": 115200,
             "mbed-encoder.debug-logs": 1

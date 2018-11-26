@@ -27,7 +27,9 @@
  *
  */
 
-#ifdef TARGET_STM32F4
+#if defined(TARGET_STM32F4) 
+
+#if defined(TARGET_NUCLEO_F401RE) 
 void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef *htim)
 {
     GPIO_InitTypeDef GPIO_InitStruct;
@@ -74,4 +76,10 @@ void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef *htim)
         HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
     }
 }
+#elif defined(TARGET_CORE2)
+    #error "Target hasn't been implemented yet!"
+#else
+    #error "Target is not supported!"
 #endif
+#endif 
+
