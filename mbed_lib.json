@@ -1,0 +1,13 @@
+{
+    "name":"mbed-encoder",
+    "config":
+    {
+        "debug-logs":
+        {
+            "help":"Debug information on UART.",
+            "macro_name": "DEBUG_LOGS_ENCODER",
+            "value": 0
+        }
+            
+    }
+}
