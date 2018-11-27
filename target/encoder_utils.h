@@ -23,13 +23,13 @@
         }                                                       \
     }
 
-#define NVIC_INIT(TIM)                                                 \
-    do                                                                 \
-    {                                                                  \
-        NVIC_SetVector((TIM##_IRQn), (uint32_t) & (TIM##_irqHandler)); \
-        HAL_NVIC_SetPriority(TIM##_IRQn, 7, 0);                        \
-        HAL_NVIC_EnableIRQ(TIM##_IRQn);                                \
-        TIM##_cnt = 0;                                                 \
+#define NVIC_SETUP(TIM,INTERRUPT)                                     \
+    do                                                                \
+    {                                                                 \
+        NVIC_SetVector((INTERRUPT), (uint32_t) & (TIM##_irqHandler)); \
+        HAL_NVIC_SetPriority(INTERRUPT, 7, 0);                        \
+        HAL_NVIC_EnableIRQ(INTERRUPT);                                \
+        TIM##_cnt = 0;                                                \
     } while (0)
 
 #if DEBUG_LOGS_ENCODER

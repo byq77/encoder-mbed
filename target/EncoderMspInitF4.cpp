@@ -27,19 +27,20 @@
  *
  */
 
+uint32_t encoder_gpio_pull = GPIO_PULLDOWN;
+
 #if defined(TARGET_STM32F4) 
 
 #if defined(TARGET_NUCLEO_F401RE) 
 void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef *htim)
 {
     GPIO_InitTypeDef GPIO_InitStruct;
-
     if (htim->Instance == TIM1) { //PA8 PA9 = Nucleo D7 D8
         __TIM1_CLK_ENABLE();
         __GPIOA_CLK_ENABLE();
         GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9;
         GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+        GPIO_InitStruct.Pull = encoder_gpio_pull;
         GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
         GPIO_InitStruct.Alternate = GPIO_AF1_TIM1;
         HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -50,7 +51,7 @@ void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef *htim)
         __TIM2_CLK_ENABLE();
         GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_1;
         GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+        GPIO_InitStruct.Pull = encoder_gpio_pull;
         GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
         GPIO_InitStruct.Alternate = GPIO_AF1_TIM2;
         HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -60,7 +61,7 @@ void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef *htim)
         __GPIOB_CLK_ENABLE();
         GPIO_InitStruct.Pin = GPIO_PIN_4 | GPIO_PIN_5;
         GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+        GPIO_InitStruct.Pull = encoder_gpio_pull;
         GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
         GPIO_InitStruct.Alternate = GPIO_AF2_TIM3;
         HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
@@ -70,7 +71,7 @@ void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef *htim)
         __GPIOB_CLK_ENABLE();
         GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7;
         GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+        GPIO_InitStruct.Pull = encoder_gpio_pull;
         GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
         GPIO_InitStruct.Alternate = GPIO_AF2_TIM4;
         HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);

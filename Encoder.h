@@ -14,19 +14,16 @@ namespace mbed
     class Encoder
     {
     public:
-        Encoder(TIM_TypeDef *TIMx, uint32_t maxcount = 0xffff, uint32_t encmode = TIM_ENCODERMODE_TI12);
+        Encoder(TIM_TypeDef *TIMx, uint32_t maxcount = 0xffff, uint32_t encmode = TIM_ENCODERMODE_TI12, uint32_t polarity = TIM_INPUTCHANNELPOLARITY_RISING, uint32_t pull = GPIO_PULLDOWN);
         int32_t getCount();
         void init();
         void print_debug_info();
         bool getDir();
-        void resetCount();  
+        void resetCount();
+        void start(uint32_t channel = TIM_CHANNEL_ALL); // TODO
+        void stop(uint32_t channel = TIM_CHANNEL_ALL); // TODO
 
-        void setPolarity(uint32_t polarity); //TODO
-        uint32_t getPolarity();              //TODO
-        TIM_TypeDef *getTIMx();              //TODO
-        void setPullUp();                    //TODO
-        void setPullDown();                  //TODO
-        void setPullReset();                 //TODO
+        virtual  ~Encoder() {};  
 
     private:
         TIM_Encoder_InitTypeDef _encoder;
@@ -34,9 +31,6 @@ namespace mbed
         TIM_TypeDef *_TIM;
         volatile int32_t * _encoder_count;
         bool _initialized;
-    private:
-        static void encoderSetup(TIM_Encoder_InitTypeDef *encoder, TIM_HandleTypeDef *timer,
-                                 TIM_TypeDef *TIMx, uint32_t maxcount, uint32_t encmode, uint32_t polarity = TIM_INPUTCHANNELPOLARITY_RISING);
     };
 } // namespace mbed
 #endif
