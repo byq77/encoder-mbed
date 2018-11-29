@@ -78,7 +78,60 @@ void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef *htim)
     }
 }
 #elif defined(TARGET_CORE2)
-    #error "Target hasn't been implemented yet!"
+    void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef *htim)
+{
+    GPIO_InitTypeDef GPIO_InitStruct;
+    GPIO_InitTypeDef GPIO_InitStruct2;
+    if (htim->Instance == TIM2) {
+       
+        __GPIOA_CLK_ENABLE();
+        __TIM2_CLK_ENABLE();
+        GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_1;
+        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+        GPIO_InitStruct.Pull = encoder_gpio_pull;
+        GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+        GPIO_InitStruct.Alternate = GPIO_AF1_TIM2;
+        HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+    }
+    else if (htim->Instance == TIM3) {
+       
+        __GPIOA_CLK_ENABLE();
+        __GPIOB_CLK_ENABLE();
+        __TIM3_CLK_ENABLE();
+        GPIO_InitStruct.Pin = GPIO_PIN_4;
+        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+        GPIO_InitStruct.Pull = encoder_gpio_pull;
+        GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+        GPIO_InitStruct.Alternate = GPIO_AF2_TIM3;
+        GPIO_InitStruct2 = GPIO_InitStruct;
+        GPIO_InitStruct2.Pin = GPIO_PIN_7;
+        HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+        HAL_GPIO_Init(GPIOA, &GPIO_InitStruct2);
+    }
+    else if (htim->Instance == TIM4) {
+        __TIM4_CLK_ENABLE();
+        __GPIOB_CLK_ENABLE();
+        GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7;
+        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+        GPIO_InitStruct.Pull = encoder_gpio_pull;
+        GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+        GPIO_InitStruct.Alternate = GPIO_AF2_TIM4;
+        HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+    }
+    else if (htim->Instance == TIM8) {
+        __TIM8_CLK_ENABLE();
+        __GPIOC_CLK_ENABLE();
+        GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7;
+        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+        GPIO_InitStruct.Pull = encoder_gpio_pull;
+        GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+        GPIO_InitStruct.Alternate = GPIO_AF3_TIM8;
+        HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+    }
+    else{
+        error("Timer not supported - you must implement it on your own.");
+    }
+}
 #else
     #error "Target is not supported!"
 #endif

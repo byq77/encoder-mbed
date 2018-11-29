@@ -20,8 +20,8 @@ namespace mbed
         void print_debug_info();
         bool getDir();
         void resetCount();
-        void start(uint32_t channel = TIM_CHANNEL_ALL); // TODO
-        void stop(uint32_t channel = TIM_CHANNEL_ALL); // TODO
+        void start(uint32_t channel = TIM_CHANNEL_ALL);
+        void stop(uint32_t channel = TIM_CHANNEL_ALL);
 
         virtual  ~Encoder() {};  
 

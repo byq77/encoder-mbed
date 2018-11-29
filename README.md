@@ -12,6 +12,10 @@ $ mbed add https://github.com/byq77/encoder-mbed.git
 ## Supported targets
 
 * TARGET_CORE2
+    * `ENCODER_1` -> `TIM2`
+    * `ENCODER_2` -> `TIM8`
+    * `ENCODER_3` -> `TIM3`
+    * `ENCODER_4` -> `TIM4`
 * TARGET_NUCLEO_F401RE
 
 You can easily add support for other STM32 targets.
