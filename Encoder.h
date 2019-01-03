@@ -14,7 +14,8 @@ namespace mbed
     class Encoder
     {
     public:
-        Encoder(TIM_TypeDef *TIMx, uint32_t maxcount = 0xffff, uint32_t encmode = TIM_ENCODERMODE_TI12, uint32_t polarity = TIM_INPUTCHANNELPOLARITY_RISING, uint32_t pull = GPIO_PULLDOWN);
+        Encoder(TIM_TypeDef * TIMx);
+        Encoder(TIM_TypeDef * TIMx, uint32_t maxcount, uint32_t encmode, uint32_t polarity, uint32_t pull);
         int32_t getCount();
         void init();
         void print_debug_info();

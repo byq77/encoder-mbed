@@ -7,8 +7,34 @@
  */
 #include <mbed.h>
 #include "Encoder.h"
-#include "./target/target_board.h"
+#include "target/target_board.h"
 extern uint32_t encoder_gpio_pull;
+
+Encoder::Encoder(TIM_TypeDef * TIMx)
+{
+    uint32_t maxcount = 0xffff, encmode = TIM_ENCODERMODE_TI12, polarity = TIM_INPUTCHANNELPOLARITY_RISING;
+#if defined(TARGET_PANTHER)
+    encoder_gpio_pull = GPIO_NOPULL;
+#else
+    encoder_gpio_pull = GPIO_PULLDOWN;
+#endif
+    _TIM = TIMx;
+    _timer.Instance = _TIM;
+    _timer.Init.Period = maxcount;
+    _timer.Init.CounterMode = TIM_COUNTERMODE_UP;
+    _timer.Init.Prescaler = 0;
+    _timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+    _encoder.EncoderMode = encmode;
+    _encoder.IC1Filter = 0x0F;
+    _encoder.IC1Polarity = polarity;
+    _encoder.IC1Prescaler = TIM_ICPSC_DIV4;
+    _encoder.IC1Selection = TIM_ICSELECTION_DIRECTTI;
+    _encoder.IC2Filter = 0x0F;
+    _encoder.IC2Polarity = polarity;
+    _encoder.IC2Prescaler = TIM_ICPSC_DIV4;
+    _encoder.IC2Selection = TIM_ICSELECTION_DIRECTTI;
+    _initialized=false;
+}
 
 Encoder::Encoder(TIM_TypeDef * TIMx, uint32_t maxcount, uint32_t encmode, uint32_t polarity, uint32_t pull)
 {

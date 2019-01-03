@@ -44,7 +44,7 @@ inline volatile int32_t * NVIC_irq_init(TIM_TypeDef * TIMx)
     }
 }
 
-#elif defined(TARGET_NUCLEO_F401RE)
+#elif defined(TARGET_NUCLEO_F401RE) || defined(TARGET_PANTHER) 
 TIM_X_CNT(TIM1);
 TIM_X_CNT(TIM2);
 TIM_X_CNT(TIM3);
@@ -78,7 +78,6 @@ inline volatile int32_t * NVIC_irq_init(TIM_TypeDef * TIMx)
         return NULL;
     }
 }
-
 #endif
 
 #endif /* __TARGET_BOARD_H__ */

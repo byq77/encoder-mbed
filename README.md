@@ -16,6 +16,11 @@ $ mbed add https://github.com/byq77/encoder-mbed.git
     * `ENCODER_2` -> `TIM8`
     * `ENCODER_3` -> `TIM3`
     * `ENCODER_4` -> `TIM4`
+* TARGET_PANTHER
+    * `ENCODER_1` -> `TIM4`
+    * `ENCODER_2` -> `TIM1`
+    * `ENCODER_3` -> `TIM3`
+    * `ENCODER_4` -> `TIM2`
 * TARGET_NUCLEO_F401RE
 
 You can easily add support for other STM32 targets.
@@ -26,11 +31,8 @@ You can easily add support for other STM32 targets.
 ```cpp
 #include <mbed.h>
 #include <Thread.h>
-#include <ThisThread.h>
 #include <mbed_events.h>
 #include <Encoder.h>
-
-using namespace rtos;
 
 DigitalOut led(LED1);
 InterruptIn button(BUTTON1,PullDown);
