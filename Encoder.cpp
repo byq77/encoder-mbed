@@ -8,6 +8,27 @@
 #include <mbed.h>
 #include "Encoder.h"
 #include "target/target_board.h"
+#define ENCODER_INIT(a, b, c, d)                            \
+    {                                                       \
+        _TIM = (a);                                         \
+        _timer.Instance = _TIM;                             \
+        _timer.Init.Period = (b);                           \
+        _timer.Init.CounterMode = TIM_COUNTERMODE_UP;       \
+        _timer.Init.Prescaler = 0;                          \
+        _timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1; \
+        _encoder.EncoderMode = (c);                         \
+        _encoder.IC1Filter = 0x0F;                          \
+        _encoder.IC1Polarity = (d);                         \
+        _encoder.IC1Prescaler = TIM_ICPSC_DIV4;             \
+        _encoder.IC1Selection = TIM_ICSELECTION_DIRECTTI;   \
+        _encoder.IC2Filter = 0x0F;                          \
+        _encoder.IC2Polarity = (d);                         \
+        _encoder.IC2Prescaler = TIM_ICPSC_DIV4;             \
+        _encoder.IC2Selection = TIM_ICSELECTION_DIRECTTI;   \
+        _polarity = 1;                                      \
+        _initialized = false;                               \
+    }
+
 extern uint32_t encoder_gpio_pull;
 
 Encoder::Encoder(TIM_TypeDef * TIMx)
@@ -18,43 +39,13 @@ Encoder::Encoder(TIM_TypeDef * TIMx)
 #else
     encoder_gpio_pull = GPIO_PULLDOWN;
 #endif
-    _TIM = TIMx;
-    _timer.Instance = _TIM;
-    _timer.Init.Period = maxcount;
-    _timer.Init.CounterMode = TIM_COUNTERMODE_UP;
-    _timer.Init.Prescaler = 0;
-    _timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-    _encoder.EncoderMode = encmode;
-    _encoder.IC1Filter = 0x0F;
-    _encoder.IC1Polarity = polarity;
-    _encoder.IC1Prescaler = TIM_ICPSC_DIV4;
-    _encoder.IC1Selection = TIM_ICSELECTION_DIRECTTI;
-    _encoder.IC2Filter = 0x0F;
-    _encoder.IC2Polarity = polarity;
-    _encoder.IC2Prescaler = TIM_ICPSC_DIV4;
-    _encoder.IC2Selection = TIM_ICSELECTION_DIRECTTI;
-    _initialized=false;
+    ENCODER_INIT(TIMx, maxcount, encmode, polarity);  
 }
 
 Encoder::Encoder(TIM_TypeDef * TIMx, uint32_t maxcount, uint32_t encmode, uint32_t polarity, uint32_t pull)
 {
     encoder_gpio_pull = pull;
-    _TIM = TIMx;
-    _timer.Instance = _TIM;
-    _timer.Init.Period = maxcount;
-    _timer.Init.CounterMode = TIM_COUNTERMODE_UP;
-    _timer.Init.Prescaler = 0;
-    _timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-    _encoder.EncoderMode = encmode;
-    _encoder.IC1Filter = 0x0F;
-    _encoder.IC1Polarity = polarity;
-    _encoder.IC1Prescaler = TIM_ICPSC_DIV4;
-    _encoder.IC1Selection = TIM_ICSELECTION_DIRECTTI;
-    _encoder.IC2Filter = 0x0F;
-    _encoder.IC2Polarity = polarity;
-    _encoder.IC2Prescaler = TIM_ICPSC_DIV4;
-    _encoder.IC2Selection = TIM_ICSELECTION_DIRECTTI;
-    _initialized=false;
+    ENCODER_INIT(TIMx, maxcount, encmode, polarity);  
 }
 
 void Encoder::init()
@@ -83,7 +74,7 @@ void Encoder::init()
 
 int32_t Encoder::getCount()
 {
-    return (int32_t)_TIM->CNT + *_encoder_count;
+    return (int32_t)(_TIM->CNT + *_encoder_count)*_polarity;
 }
 
 bool Encoder::getDir()
@@ -93,10 +84,12 @@ bool Encoder::getDir()
 
 void Encoder::print_debug_info()
 {
+#if DEBUG_LOGS_ENCODER
     if(_initialized)
-        LOG("cnt: %d dir: %s\r\n", getCount(), getDir() ? "-" : "+");
+        printf("cnt: %d dir: %s\r\n", getCount(), getDir() ? "-" : "+");
     else
-        LOG("Library is not initialized!\r\n");
+        printf("Library is not initialized!\r\n");
+#endif
 }
 
 void Encoder::resetCount()

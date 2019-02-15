@@ -23,7 +23,9 @@ namespace mbed
         void resetCount();
         void start(uint32_t channel = TIM_CHANNEL_ALL);
         void stop(uint32_t channel = TIM_CHANNEL_ALL);
-
+        void togglePolarity(){
+            _polarity*=-1;
+        }
         virtual  ~Encoder() {};  
 
     private:
@@ -32,6 +34,7 @@ namespace mbed
         TIM_TypeDef *_TIM;
         volatile int32_t * _encoder_count;
         bool _initialized;
+        int32_t _polarity;
     };
 } // namespace mbed
 #endif

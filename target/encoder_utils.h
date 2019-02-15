@@ -32,10 +32,4 @@
         TIM##_cnt = 0;                                                \
     } while (0)
 
-#if DEBUG_LOGS_ENCODER
-    #define LOG(f_ , ...) printf((f_), ##__VA_ARGS__)
-#else
-    #define LOG(f_ , ...) do {} while (0)
-#endif
-
 #endif /*__ENCODER_UTILS_H__ */
