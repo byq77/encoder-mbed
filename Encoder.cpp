@@ -33,19 +33,18 @@ extern uint32_t encoder_gpio_pull;
 
 Encoder::Encoder(TIM_TypeDef * TIMx)
 {
-    uint32_t maxcount = 0xffff, encmode = TIM_ENCODERMODE_TI12, polarity = TIM_INPUTCHANNELPOLARITY_RISING;
+    ENCODER_INIT(TIMx, 0xffff, TIM_ENCODERMODE_TI12, TIM_INPUTCHANNELPOLARITY_RISING);  
 #if defined(TARGET_PANTHER)
     encoder_gpio_pull = GPIO_NOPULL;
 #else
     encoder_gpio_pull = GPIO_PULLDOWN;
 #endif
-    ENCODER_INIT(TIMx, maxcount, encmode, polarity);  
 }
 
-Encoder::Encoder(TIM_TypeDef * TIMx, uint32_t maxcount, uint32_t encmode, uint32_t polarity, uint32_t pull)
+Encoder::Encoder(TIM_TypeDef *TIMx, const TIM_HandleTypeDef *timer, const TIM_Encoder_InitTypeDef *encoder, uint32_t pull)
+    : _TIM(TIMx), _timer(*timer), _encoder(*encoder)
 {
     encoder_gpio_pull = pull;
-    ENCODER_INIT(TIMx, maxcount, encmode, polarity);  
 }
 
 void Encoder::init()
@@ -72,9 +71,9 @@ void Encoder::init()
     _initialized = true;
 }
 
-int32_t Encoder::getCount()
+int32_t Encoder::getCount() const
 {
-    return (int32_t)(_TIM->CNT + *_encoder_count)*_polarity;
+    return (_polarity ? *_encoder_count+_TIM->CNT : -(*_encoder_count+_TIM->CNT));
 }
 
 bool Encoder::getDir()
@@ -116,4 +115,9 @@ void Encoder::stop(uint32_t channel)
     {
         error("Couldn't Stop Encoder\r\n");
     }
+}
+
+void Encoder::togglePolarity()
+{
+    _polarity = !_polarity;
 }

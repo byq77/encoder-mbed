@@ -5,7 +5,6 @@ Hardware encoder library for stm32f4.
 In your mbed application root folder run:
 
 ```bash
-$ cd lib # make sure you have lib dir, otherwise run 'mkdir lib'
 $ mbed add https://github.com/byq77/encoder-mbed.git
 ```
 

@@ -9,32 +9,87 @@
 #define __ENCODER_H__
 
 #include <mbed.h>
-namespace mbed
-{
-    class Encoder
-    {
-    public:
-        Encoder(TIM_TypeDef * TIMx);
-        Encoder(TIM_TypeDef * TIMx, uint32_t maxcount, uint32_t encmode, uint32_t polarity, uint32_t pull);
-        int32_t getCount();
-        void init();
-        void print_debug_info();
-        bool getDir();
-        void resetCount();
-        void start(uint32_t channel = TIM_CHANNEL_ALL);
-        void stop(uint32_t channel = TIM_CHANNEL_ALL);
-        void togglePolarity(){
-            _polarity*=-1;
-        }
-        virtual  ~Encoder() {};  
 
-    private:
-        TIM_Encoder_InitTypeDef _encoder;
-        TIM_HandleTypeDef _timer;
-        TIM_TypeDef *_TIM;
-        volatile int32_t * _encoder_count;
-        bool _initialized;
-        int32_t _polarity;
-    };
-} // namespace mbed
+/**
+ * @brief Quadrature encoder interface class.
+ *
+ * Hardware encoder interface for STM32F4 targets.
+ * Support for following boards:
+ * * CORE2
+ * * PANTHER
+ * * NUCLEOF401RE
+ */
+class Encoder
+{
+  public:
+
+    /**
+     * @brief Encoder constructor.
+     * @param TIMx timer used by encoder   
+     */
+    Encoder(TIM_TypeDef *TIMx);
+
+    /**
+     * @brief Encoder constructor.
+     * @param TIMx timer used by encoder
+     * @param timer pointer to timer configuration
+     * @param encoder pointer to encoder configuration
+     * @param pull GPIO_NOPULL/GPIO_PULLDOWN/GPIO_PULLUP
+     */
+    Encoder(TIM_TypeDef *TIMx, const TIM_HandleTypeDef * timer, const TIM_Encoder_InitTypeDef * encoder, uint32_t pull);
+
+    /**
+     * @brief Get current encoder count.
+     * @return num of encoder ticks
+     */
+    int32_t getCount() const;
+    
+    /**
+     * @brief Initialise Encoder instance.
+     *
+     * This function starts hardware encoder operation.
+     */
+    void init();
+
+    /**
+     * @brief Print short debugging information to Serial.
+     */
+    void print_debug_info();
+    
+    /**
+     * @brief Get encoder counting direction.
+     * @return true if encoder's counter is incremented, false otherwise
+     */
+    bool getDir();
+
+    /**
+     * @brief Reset current encoder count.
+     */
+    void resetCount();
+
+    /**
+     * @brief Restart encoder after stop.
+     */
+    void start(uint32_t channel = TIM_CHANNEL_ALL);
+    
+    /**
+     * @brief Stop encoder.
+     */
+    void stop(uint32_t channel = TIM_CHANNEL_ALL);
+    
+    /**
+     * @brief Toogle counter sign.
+     */
+    void togglePolarity();
+    virtual ~Encoder(){};
+
+  private:
+    TIM_Encoder_InitTypeDef _encoder;
+    TIM_HandleTypeDef _timer;
+    TIM_TypeDef *_TIM;
+    volatile int32_t *_encoder_count;
+    bool _initialized;
+    bool _polarity;
+};
+
 #endif
