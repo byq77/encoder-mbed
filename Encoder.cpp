@@ -8,10 +8,11 @@
 #include <mbed.h>
 #include "Encoder.h"
 #include "target/target_board.h"
-#define ENCODER_INIT(a, b, c, d)                            \
+
+#define MAX_TIMER_VALUE_HALF 32768
+#define ENCODER_INIT(a, b, c, d, e)                         \
     {                                                       \
-        _TIM = (a);                                         \
-        _timer.Instance = _TIM;                             \
+        _timer.Instance = (a);                              \
         _timer.Init.Period = (b);                           \
         _timer.Init.CounterMode = TIM_COUNTERMODE_UP;       \
         _timer.Init.Prescaler = 0;                          \
@@ -22,7 +23,7 @@
         _encoder.IC1Prescaler = TIM_ICPSC_DIV4;             \
         _encoder.IC1Selection = TIM_ICSELECTION_DIRECTTI;   \
         _encoder.IC2Filter = 0x0F;                          \
-        _encoder.IC2Polarity = (d);                         \
+        _encoder.IC2Polarity = (e);                         \
         _encoder.IC2Prescaler = TIM_ICPSC_DIV4;             \
         _encoder.IC2Selection = TIM_ICSELECTION_DIRECTTI;   \
         _polarity = 1;                                      \
@@ -31,9 +32,12 @@
 
 extern uint32_t encoder_gpio_pull;
 
-Encoder::Encoder(TIM_TypeDef * TIMx)
+Encoder::Encoder(TIM_TypeDef * TIMx, bool polarity)
+: _TIM(TIMx)
 {
-    ENCODER_INIT(TIMx, 0xffff, TIM_ENCODERMODE_TI12, TIM_INPUTCHANNELPOLARITY_RISING);  
+    _polarity = polarity;
+    int d = polarity ? TIM_INPUTCHANNELPOLARITY_RISING : TIM_INPUTCHANNELPOLARITY_FALLING;
+    ENCODER_INIT(TIMx, 0xffff, TIM_ENCODERMODE_TI12, d, TIM_INPUTCHANNELPOLARITY_RISING);  
 #if defined(TARGET_PANTHER)
     encoder_gpio_pull = GPIO_NOPULL;
 #else
@@ -44,6 +48,7 @@ Encoder::Encoder(TIM_TypeDef * TIMx)
 Encoder::Encoder(TIM_TypeDef *TIMx, const TIM_HandleTypeDef *timer, const TIM_Encoder_InitTypeDef *encoder, uint32_t pull)
     : _TIM(TIMx), _timer(*timer), _encoder(*encoder)
 {
+    _polarity = (_encoder.IC1Polarity == TIM_INPUTCHANNELPOLARITY_RISING);
     encoder_gpio_pull = pull;
 }
 
@@ -65,7 +70,7 @@ void Encoder::init()
     
     core_util_critical_section_enter();
     
-    _encoder_count = NVIC_irq_init(_TIM);
+    _encoder_high_bits = NVIC_irq_init(_TIM);
 
     core_util_critical_section_exit();
     _initialized = true;
@@ -73,7 +78,21 @@ void Encoder::init()
 
 int32_t Encoder::getCount() const
 {
-    return (_polarity ? *_encoder_count+_TIM->CNT : -(*_encoder_count+_TIM->CNT));
+    int32_t count, hbits;
+    core_util_critical_section_enter();
+    count = _TIM->CNT;
+    if ((_TIM->SR & (TIM_FLAG_UPDATE)) == (TIM_FLAG_UPDATE))
+    {
+        _TIM->SR = ~(TIM_IT_UPDATE);
+        if (_TIM->CNT < MAX_TIMER_VALUE_HALF)
+            *_encoder_high_bits += 1;
+        else
+            *_encoder_high_bits -= 1;
+        count = _TIM->CNT;
+    }
+    hbits = *_encoder_high_bits;
+    core_util_critical_section_exit();
+    return  (hbits << 16) | count;
 }
 
 bool Encoder::getDir()
@@ -96,7 +115,7 @@ void Encoder::resetCount()
     if(!_initialized)
         return;
     core_util_critical_section_enter();
-        *_encoder_count = _TIM->CNT = 0;
+        *_encoder_high_bits = _TIM->CNT = 0;
         __HAL_TIM_CLEAR_FLAG(&_timer, TIM_IT_UPDATE);
     core_util_critical_section_exit();
 }
@@ -119,5 +138,11 @@ void Encoder::stop(uint32_t channel)
 
 void Encoder::togglePolarity()
 {
+    
     _polarity = !_polarity;
+    _encoder.IC1Polarity = (_polarity ? TIM_INPUTCHANNELPOLARITY_RISING : TIM_INPUTCHANNELPOLARITY_FALLING);
+    if(_initialized)
+    {
+        //TODO implement!
+    }
 }

@@ -27,14 +27,14 @@ class Encoder
      * @brief Encoder constructor.
      * @param TIMx timer used by encoder   
      */
-    Encoder(TIM_TypeDef *TIMx);
+    Encoder(TIM_TypeDef *TIMx, bool polarity = true);
 
     /**
      * @brief Encoder constructor.
      * @param TIMx timer used by encoder
      * @param timer pointer to timer configuration
      * @param encoder pointer to encoder configuration
-     * @param pull GPIO_NOPULL/GPIO_PULLDOWN/GPIO_PULLUP
+     * @param pull GPIO_NOPULL / GPIO_PULLDOWN / GPIO_PULLUP
      */
     Encoder(TIM_TypeDef *TIMx, const TIM_HandleTypeDef * timer, const TIM_Encoder_InitTypeDef * encoder, uint32_t pull);
 
@@ -78,16 +78,17 @@ class Encoder
     void stop(uint32_t channel = TIM_CHANNEL_ALL);
     
     /**
-     * @brief Toogle counter sign.
+     * @brief Toggle encoder polarity.
      */
     void togglePolarity();
+    
     virtual ~Encoder(){};
 
   private:
-    TIM_Encoder_InitTypeDef _encoder;
-    TIM_HandleTypeDef _timer;
     TIM_TypeDef *_TIM;
-    volatile int32_t *_encoder_count;
+    TIM_HandleTypeDef _timer;
+    TIM_Encoder_InitTypeDef _encoder;
+    volatile int32_t *_encoder_high_bits;
     bool _initialized;
     bool _polarity;
 };

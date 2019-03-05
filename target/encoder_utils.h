@@ -17,9 +17,9 @@
         {                                                       \
             TIM->SR = ~(TIM_IT_UPDATE);                         \
             if (!(TIM->CR1 & (TIM_CR1_DIR)))                    \
-                TIM##_cnt += 0xffff;                            \
+                TIM##_cnt += 1;                                 \
             else                                                \
-                TIM##_cnt -= 0xffff;                            \
+                TIM##_cnt -= 1;                                 \
         }                                                       \
     }
 
