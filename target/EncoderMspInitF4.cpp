@@ -199,7 +199,7 @@ void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef *htim)
         GPIO_InitStruct.Pull = encoder_gpio_pull;
         GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
         GPIO_InitStruct.Alternate = GPIO_AF2_TIM4;
-        HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+        HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
     }
     else{
         error("Timer not supported - you must implement it on your own.");
