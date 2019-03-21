@@ -60,6 +60,9 @@ void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef *htim)
         GPIO_InitStruct.Alternate = GPIO_AF2_TIM4;
         HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
     }
+    else{
+        error("Timer not supported - you must implement it on your own.");
+    }
 }
 #elif defined(TARGET_CORE2)
     void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef *htim)
@@ -170,8 +173,38 @@ void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef *htim)
         HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
         HAL_GPIO_Init(GPIOB, &GPIO_InitStruct2);
     }
+    else{
+        error("Timer not supported - you must implement it on your own.");
+    }
 }
-
+#elif defined(TARGET_RCP)
+void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef *htim)
+{
+    GPIO_InitTypeDef GPIO_InitStruct;
+    if (htim->Instance == TIM2) { 
+        __GPIOA_CLK_ENABLE();
+        __TIM2_CLK_ENABLE();
+        GPIO_InitStruct.Pin = GPIO_PIN_0 | GPIO_PIN_1;
+        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+        GPIO_InitStruct.Pull = encoder_gpio_pull;
+        GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+        GPIO_InitStruct.Alternate = GPIO_AF1_TIM2;
+        HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+    }
+    else if (htim->Instance == TIM4) { 
+        __TIM4_CLK_ENABLE();
+        __GPIOD_CLK_ENABLE();
+        GPIO_InitStruct.Pin = GPIO_PIN_12 | GPIO_PIN_13;
+        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+        GPIO_InitStruct.Pull = encoder_gpio_pull;
+        GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+        GPIO_InitStruct.Alternate = GPIO_AF2_TIM4;
+        HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+    }
+    else{
+        error("Timer not supported - you must implement it on your own.");
+    }
+}
 #else
     #error "Target is not supported!"
 #endif

@@ -26,6 +26,7 @@ class Encoder
     /**
      * @brief Encoder constructor.
      * @param TIMx timer used by encoder   
+     * @param polarity encoder polarity (counting direction)   
      */
     Encoder(TIM_TypeDef *TIMx, bool polarity = true);
 

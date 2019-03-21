@@ -78,6 +78,28 @@ inline volatile int32_t * NVIC_irq_init(TIM_TypeDef * TIMx)
         return NULL;
     }
 }
+#elif defined(TARGET_RCP)
+TIM_X_CNT(TIM2);
+TIM_X_CNT(TIM4);
+TIM_X_IRQ_HANDLER(TIM2);        
+TIM_X_IRQ_HANDLER(TIM4);        
+
+inline volatile int32_t * NVIC_irq_init(TIM_TypeDef * TIMx)
+{
+    switch((uint32_t)TIMx)
+    {
+        case TIM2_BASE:
+        NVIC_SETUP(TIM2,TIM2_IRQn);
+        return &TIM2_cnt;
+
+        case TIM4_BASE:
+        NVIC_SETUP(TIM4,TIM4_IRQn);
+        return &TIM4_cnt;
+
+        default:
+        return NULL;
+    }
+}
 #endif
 
 #endif /* __TARGET_BOARD_H__ */

@@ -10,19 +10,26 @@ $ mbed add https://github.com/byq77/encoder-mbed.git
 
 ## Supported targets
 
-* TARGET_CORE2
-    * `ENCODER_1` -> `TIM2`
-    * `ENCODER_2` -> `TIM8`
-    * `ENCODER_3` -> `TIM3`
-    * `ENCODER_4` -> `TIM4`
-* TARGET_PANTHER
-    * `ENCODER_1` -> `TIM4`
-    * `ENCODER_2` -> `TIM1`
-    * `ENCODER_3` -> `TIM3`
-    * `ENCODER_4` -> `TIM2`
-* TARGET_NUCLEO_F401RE
+* **TARGET_CORE2**
+    * ENCODER_1: `TIM2` (`PA_0` and `PA_1`) 
+    * ENCODER_2: `TIM8` (`PC_6` and `PC_7`)
+    * ENCODER_3: `TIM3` (`PB_4` and `PA_7`)
+    * ENCODER_4: `TIM4` (`PB_6` and `PB_7`)
+* **TARGET_PANTHER**
+    * ENCODER_1: `TIM4` (`PB_6` and `PB_7`)
+    * ENCODER_2: `TIM1` (`PE_9` and `PE_11`)
+    * ENCODER_3: `TIM3` (`PC_6` and `PC_7`)
+    * ENCODER_4: `TIM2` (`PA_15` and `PB_3`)
+* **TARGET_NUCLEO_F401RE**
+    * `TIM1` (`PA_8` and `PA_9`)
+    * `TIM2` (`PA_0` and `PA_1`)
+    * `TIM3` (`PB_4` and `PB_5`)
+    * `TIM4` (`PB_6` and `PB_7`)
+* **TARGET_RCP**
+    * ENCODER1:`TIM2` (`PA_0` and `PA_1`)
+    * ENCODER2:`TIM4` (`PD_12` and `PD_13`)
 
-You can easily add support for other STM32 targets.
+You can easily add support for other STM32 targets or change assigned pins by editing following files `target/target_board.h` and `EncoderMspInitF4.cpp`.
 
 ## Example code
 
