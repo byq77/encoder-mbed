@@ -27,7 +27,7 @@
     do                                                                \
     {                                                                 \
         NVIC_SetVector((INTERRUPT), (uint32_t) & (TIM##_irqHandler)); \
-        HAL_NVIC_SetPriority(INTERRUPT, 7, 0);                        \
+        HAL_NVIC_SetPriority(INTERRUPT, 6, 0);                        \
         HAL_NVIC_EnableIRQ(INTERRUPT);                                \
         TIM##_cnt = 0;                                                \
     } while (0)

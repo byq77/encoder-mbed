@@ -136,13 +136,17 @@ void Encoder::stop(uint32_t channel)
     }
 }
 
-void Encoder::togglePolarity()
+void Encoder::setPolarity(bool polarity)
 {
-    
-    _polarity = !_polarity;
+    _polarity = polarity;
     _encoder.IC1Polarity = (_polarity ? TIM_INPUTCHANNELPOLARITY_RISING : TIM_INPUTCHANNELPOLARITY_FALLING);
     if(_initialized)
     {
         //TODO implement!
     }
+}
+
+void Encoder::togglePolarity()
+{
+    setPolarity(!_polarity);
 }

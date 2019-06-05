@@ -83,6 +83,8 @@ class Encoder
      */
     void togglePolarity();
     
+    void setPolarity(bool polarity);
+    
     virtual ~Encoder(){};
 
   private:
