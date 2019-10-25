@@ -177,7 +177,7 @@ void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef *htim)
         error("Timer not supported - you must implement it on your own.");
     }
 }
-#elif defined(TARGET_RCP)
+#elif defined(TARGET_RCP_F407)
 void HAL_TIM_Encoder_MspInit(TIM_HandleTypeDef *htim)
 {
     GPIO_InitTypeDef GPIO_InitStruct;

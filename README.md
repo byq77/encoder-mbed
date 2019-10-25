@@ -25,7 +25,7 @@ $ mbed add https://github.com/byq77/encoder-mbed.git
     * `TIM2` (`PA_0` and `PA_1`)
     * `TIM3` (`PB_4` and `PB_5`)
     * `TIM4` (`PB_6` and `PB_7`)
-* **TARGET_RCP**
+* **TARGET_RCP_F407**
     * ENCODER1:`TIM2` (`PA_0` and `PA_1`)
     * ENCODER2:`TIM4` (`PD_12` and `PD_13`)
 
