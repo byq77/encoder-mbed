@@ -78,7 +78,7 @@ inline volatile int32_t * NVIC_irq_init(TIM_TypeDef * TIMx)
         return NULL;
     }
 }
-#elif defined(TARGET_RCP_F407)
+#elif defined(TARGET_CALANTHE) || defined(TARGET_PAVETTA) || defined(TARGET_FRINGILLA) || defined(TARGET_FRINGILLA_AOE)
 TIM_X_CNT(TIM2);
 TIM_X_CNT(TIM4);
 TIM_X_IRQ_HANDLER(TIM2);        
