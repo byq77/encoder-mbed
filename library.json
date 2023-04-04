@@ -1,0 +1,9 @@
+{
+    "name": "encoder-mbed",
+    "version": "1.0.0",
+    "description": "Mbed quadrature encoders library for ROSbot 2.0",
+    "keywords": "pio, quadrature_encoders",
+    "build": {
+      "builder": "MbedLibBuilder"
+    }
+  }
